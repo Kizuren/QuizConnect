@@ -22,12 +22,6 @@ public class AdminController : ControllerBase
         _tokenService = tokenService;
         _questionManagementService = questionManagementService;
     }
-    
-    [HttpGet("test-exception")]
-    public IActionResult TestException()
-    {
-        throw new Exception("This is a test exception");
-    }
 
     [HttpPost("login")]
     public ActionResult<AdminLoginResponse> Login([FromBody] AdminLoginRequest request)
