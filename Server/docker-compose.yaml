@@ -1,0 +1,11 @@
+﻿services:
+  quizconnectserver:
+    image: ghcr.io/marcus7i/quizconnect:latest
+    container_name: quizconnectserver
+    environment:
+      - APP_UID=1000
+    ports:
+      - "9500:9500"
+    volumes:
+      - ./Server/.env:/app/.env
+    restart: unless-stopped

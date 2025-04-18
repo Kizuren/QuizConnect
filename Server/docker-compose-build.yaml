@@ -1,0 +1,12 @@
+﻿services:
+  quizconnectserver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      environment:
+      - APP_UID=1000
+    ports:
+      - "9500:9500"
+    volumes:
+      - ./Server/.env:/app/.env
+    restart: unless-stopped

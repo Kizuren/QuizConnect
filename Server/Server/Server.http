@@ -1,0 +1,224 @@
+@baseUrl = http://localhost:9500/api
+@questionId = {{createQuestion.response.body.questionModels.id}}
+
+### Exception testing
+# @name testException
+GET {{baseUrl}}/admin/test-exception
+
+
+### Admin Login
+# @name loginAdmin
+POST {{baseUrl}}/admin/login
+Content-Type: application/json
+
+{
+  "loginId": "{{loginAdmin}}"
+}
+> {%
+    const accessToken = response.body.accessToken;
+    client.global.set("adminToken", accessToken);
+%}
+
+### Admin - User Management ###
+
+### List Users
+GET {{baseUrl}}/admin/users
+Authorization: Bearer {{adminToken}}
+
+### Add User
+# @name addUser
+POST {{baseUrl}}/admin/users
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "userName": "TestUser123"
+}
+
+### Edit User
+PUT {{baseUrl}}/admin/users
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "userName": "TestUser123",
+  "newUserName": "UpdatedUser123"
+}
+
+### Reset User
+PUT {{baseUrl}}/admin/users/reset
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "userName": "UpdatedUser123"
+}
+
+### Delete User
+DELETE {{baseUrl}}/admin/users
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "userName": "UpdatedUser123"
+}
+
+### Admin - Question Set Management ###
+
+### List Question Sets
+GET {{baseUrl}}/admin/questionsets
+Authorization: Bearer {{adminToken}}
+
+### Create Question Set
+# @name createQuestionSet
+POST {{baseUrl}}/admin/questionsets
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "questionSetName": "Test Question Set"
+}
+> {%
+    const questionSetId = response.body.questionSet.questionSetId;
+    client.global.set("questionSetId", questionSetId);
+%}
+
+### Update Question Set Name
+PUT {{baseUrl}}/admin/questionsets/name
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "questionSetId": "{{questionSetId}}",
+  "newQuestionSetName": "Updated Question Set"
+}
+
+### Update Question Set Order
+PUT {{baseUrl}}/admin/questionsets/order
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "questionSetId": "{{questionSetId}}",
+  "questionSetOrder": 2
+}
+
+### Lock/Unlock Question Set
+PUT {{baseUrl}}/admin/questionsets/lock
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "questionSetId": "{{questionSetId}}",
+  "locked": true
+}
+
+### Delete Question Set
+DELETE {{baseUrl}}/admin/questionsets
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "questionSetId": "{{questionSetId}}"
+}
+
+### Admin - Question Management ###
+
+### List Questions in a Set
+GET {{baseUrl}}/admin/questions?questionSetId={{questionSetId}}
+Authorization: Bearer {{adminToken}}
+
+### Create Question
+# @name createQuestion
+POST {{baseUrl}}/admin/questions
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "questionSetId": "{{questionSetId}}",
+  "questionText": "What is your favorite color?",
+  "expectedResultText": "A color name and explanation",
+  "questionOrder": 1,
+  "minWordLength": 10,
+  "maxWordLength": 100
+}
+
+### Update Question
+PUT {{baseUrl}}/admin/questions
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "questionId": "{{questionId}}",
+  "questionText": "What is your favorite programming language?",
+  "expectedResultText": "A programming language and why",
+  "questionOrder": 1,
+  "minWordLength": 20,
+  "maxWordLength": 200
+}
+
+### Delete Question
+DELETE {{baseUrl}}/admin/questions
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "questionId": "{{questionId}}"
+}
+
+### Admin - Responses ###
+
+### Get Responses for a Question
+GET {{baseUrl}}/admin/responses?questionId={{questionId}}
+Authorization: Bearer {{adminToken}}
+
+### User APIs ###
+
+### User Login
+# @name loginUser
+POST {{baseUrl}}/user/login
+Content-Type: application/json
+
+{
+  "pin": "2D21"
+}
+> {%
+    const userToken = response.body.accessToken;
+    client.global.set("userToken", userToken);
+%}
+
+### Get Username
+GET {{baseUrl}}/user/username
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+### Get Reset State
+GET {{baseUrl}}/user/state
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+### User - Questions ###
+
+### Get Question Sets
+GET {{baseUrl}}/user/questionsets
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+### Get Questions from Set
+# @name getQuestions
+GET {{baseUrl}}/user/questions?questionSetId={{questionSetId}}
+Authorization: Bearer {{userToken}}
+
+### Submit Response
+POST {{baseUrl}}/user/responses
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+{
+  "questionId": "{{questionId}}",
+  "responseText": "This is my response to the question. Probably, what do you say?"
+}
+
+### Get User Responses
+GET {{baseUrl}}/user/responses?questionId={{questionId}}
+Authorization: Bearer {{userToken}}
