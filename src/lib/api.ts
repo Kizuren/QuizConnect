@@ -29,8 +29,22 @@ export const login = async (pin: string) => {
   return response.data;
 };
 
+export const logout = async (accessToken: string) => {
+  const response = await api.delete('/user/logout', { 
+    data: { accessToken } 
+  });
+  return response.data;
+}
+
 export const adminLogin = async (loginId: string) => {
   const response = await api.post('/admin/login', { loginId });
+  return response.data;
+};
+
+export const adminLogout = async (accessToken: string) => {
+  const response = await api.delete('/admin/logout', { 
+    data: { accessToken } 
+  });
   return response.data;
 };
 
