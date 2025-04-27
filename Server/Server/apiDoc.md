@@ -37,6 +37,26 @@ Authenticates an admin user and returns an access token.
 }
 ```
 
+### Admin Logout
+Logs out an admin user.
+
+**Endpoint:** `DELETE /api/admin/logout`
+
+**Request Body:**
+```json
+{
+  "accessToken": "string"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "errorMessage": null
+}
+```
+
 ### User Login
 Authenticates a user with their PIN and returns an access token.
 
@@ -54,6 +74,26 @@ Authenticates a user with their PIN and returns an access token.
 {
   "success": true,
   "accessToken": "string",
+  "errorMessage": null
+}
+```
+
+### User Logout
+Logs out a user.
+
+**Endpoint:** `DELETE /api/user/logout`
+
+**Request Body:**
+```json
+{
+  "accessToken": "string"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
   "errorMessage": null
 }
 ```
