@@ -16,6 +16,7 @@ public interface IUserManagementService
     Task<UserModel?> GetUserByNameAsync(string userName);
     string GenerateAccessToken(string username);
     void ResetLoginState(string userName);
+    bool ClearToken(string token);
 }
 
 public class UserManagementService : IUserManagementService
@@ -135,4 +136,6 @@ public class UserManagementService : IUserManagementService
             u => u.Username == userName,
             Builders<UserModel>.Update.Set(u => u.ResetState, false));
     }
+
+    public bool ClearToken(string accessToken) => _tokenService.ClearToken(accessToken);
 }

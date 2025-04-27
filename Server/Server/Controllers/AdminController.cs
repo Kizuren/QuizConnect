@@ -47,6 +47,24 @@ public class AdminController : ControllerBase
         });
     }
     
+    [HttpDelete("logout")]
+    public ActionResult<AdminLogoutResponse> Login([FromBody] AdminLogoutRequest request)
+    {
+        if (request.AccessToken == string.Empty || !_tokenService.ClearToken(request.AccessToken))
+        {
+            return Ok(new AdminLogoutResponse 
+            { 
+                Success = false, 
+                ErrorMessage = "Invalid access token"
+            });
+        }
+
+        return Ok(new AdminLogoutResponse
+        { 
+            Success = true
+        });
+    }
+    
     private string? GetBearerToken()
     {
         if (!HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))

@@ -12,6 +12,17 @@ public class AdminLoginResponse
     public string AccessToken { get; set; } = string.Empty;
     public string? ErrorMessage { get; set; }
 }
+
+public class AdminLogoutRequest
+{
+    public string AccessToken { get; set; } = string.Empty;
+}
+
+public class AdminLogoutResponse
+{
+    public bool Success { get; set; }
+    public string? ErrorMessage { get; set; }
+}
 #endregion
 
 #region User Administration

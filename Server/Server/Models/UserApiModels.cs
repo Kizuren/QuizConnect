@@ -12,6 +12,17 @@ public class UserLoginResponse
     public string AccessToken { get; set; } = string.Empty;
     public string? ErrorMessage { get; set; }
 }
+
+public class UserLogoutRequest
+{
+    public string AccessToken { get; set; } = string.Empty;
+}
+
+public class UserLogoutResponse
+{
+    public bool Success { get; set; }
+    public string? ErrorMessage { get; set; }
+}
 #endregion
 
 #region User States

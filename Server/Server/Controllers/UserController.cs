@@ -24,7 +24,7 @@ public class UserController : ControllerBase
         
         if (user == null)
         {
-            return Ok(new UserLoginResponse 
+            return Ok(new UserLoginResponse
             { 
                 Success = false, 
                 ErrorMessage = "Invalid PIN" 
@@ -41,6 +41,24 @@ public class UserController : ControllerBase
         { 
             Success = true, 
             AccessToken = accessToken 
+        });
+    }
+    
+    [HttpDelete("logout")]
+    public ActionResult<UserLogoutResponse> Logout([FromBody] UserLogoutRequest request)
+    {
+        if (request.AccessToken == string.Empty || !_userManagementService.ClearToken(request.AccessToken))
+        {
+            return Ok(new UserLogoutResponse 
+            { 
+                Success = false,
+                ErrorMessage = "Invalid access token"
+            });
+        }
+
+        return Ok(new UserLogoutResponse 
+        { 
+            Success = true
         });
     }
 

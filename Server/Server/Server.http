@@ -6,6 +6,15 @@
 GET {{baseUrl}}/admin/test-exception
 
 
+### Admin Logout
+# @name logoutAdmin
+DELETE {{baseUrl}}/admin/logout
+Content-Type: application/json
+
+{
+  "accessToken": "{{adminToken}}"
+}
+
 ### Admin Login
 # @name loginAdmin
 POST {{baseUrl}}/admin/login
@@ -175,12 +184,21 @@ Authorization: Bearer {{adminToken}}
 ### User APIs ###
 
 ### User Login
+# @name logoutUser
+DELETE {{baseUrl}}/user/logout
+Content-Type: application/json
+
+{
+  "accessToken": "{{userToken}}"
+}
+
+### User Login
 # @name loginUser
 POST {{baseUrl}}/user/login
 Content-Type: application/json
 
 {
-  "pin": "2D21"
+  "pin": "{{loginUser}}"
 }
 > {%
     const userToken = response.body.accessToken;

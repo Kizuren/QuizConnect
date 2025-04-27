@@ -5,7 +5,7 @@ public interface IUserTokenService
     void StoreToken(string token, string username);
     string? GetUsernameFromToken(string token);
     bool ValidateToken(string token);
-    void ClearToken(string token);
+    bool ClearToken(string token);
     void RemoveTokensForUser(string username);
     void UpdateUserInTokens(string oldUsername, string newUsername);
 }
@@ -29,10 +29,7 @@ public class UserTokenService : IUserTokenService
         return _userTokens.ContainsKey(token);
     }
 
-    public void ClearToken(string token)
-    {
-        _userTokens.Remove(token);
-    }
+    public bool ClearToken(string token) => _userTokens.Remove(token);
     
     public void RemoveTokensForUser(string username)
     {

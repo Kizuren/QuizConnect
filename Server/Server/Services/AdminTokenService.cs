@@ -4,6 +4,7 @@ public interface IAdminTokenService
 {
     void StoreToken(string token);
     bool ValidateToken(string token);
+    bool ClearToken(string token);
 }
 
 public class AdminTokenService : IAdminTokenService
@@ -19,4 +20,6 @@ public class AdminTokenService : IAdminTokenService
     {
         return _adminTokens.ContainsKey(token) && _adminTokens[token];
     }
+
+    public bool ClearToken(string token) => _adminTokens.Remove(token);
 }
