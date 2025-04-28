@@ -210,15 +210,33 @@ public class QuestionManagementService : IQuestionManagementService
         
         await _responsesCollection.InsertOneAsync(response);
         
-        // Discord webhook
-        var question = await GetQuestionByIdAsync(questionId);
         string questionSetId = questionId.Split('_')[0];
         var questionSet = await GetQuestionSetByIdAsync(questionSetId);
-        await _discordNotificationService.SendResponseNotification(
-            userName, 
-            questionSet?.QuestionSetName ?? "Unknown Set", 
-            question?.QuestionText ?? "Unknown Question", 
-            responseText);
+        
+        var allQuestionsInSet = await GetQuestionsInSetAsync(questionSetId);
+        var userResponses = await _responsesCollection
+            .Find(r => r.UserName == userName && r.QuestionId.StartsWith(questionSetId + "_"))
+            .ToListAsync();
+        
+        var answeredQuestionIds = userResponses.Select(r => r.QuestionId).ToHashSet();
+        
+        if (allQuestionsInSet.Questions.All(q => answeredQuestionIds.Contains(q.QuestionId)))
+        {
+            var responseDict = new Dictionary<string, string>();
+            foreach (var q in allQuestionsInSet.Questions.OrderBy(q => q.QuestionOrder))
+            {
+                var userResponse = userResponses.FirstOrDefault(r => r.QuestionId == q.QuestionId);
+                if (userResponse != null)
+                {
+                    responseDict[q.QuestionText] = userResponse.ResponseText;
+                }
+            }
+            
+            await _discordNotificationService.SendResponseNotification(
+                userName,
+                questionSet?.QuestionSetName ?? "Unknown Set",
+                responseDict);
+        }
         
         return true;
     }

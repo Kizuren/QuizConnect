@@ -6,9 +6,10 @@ namespace WritingServer.Services;
 public interface IDiscordNotificationService
 {
     Task SendStartupNotification(TimeSpan startupTime, long memoryUsageMb);
-    Task SendResponseNotification(string username, string questionSetName, string questionText, string responseText);
+    Task SendResponseNotification(string username, string questionSetName,
+        Dictionary<string, string> response);
     Task SendExceptionNotification(string path);
-    Task SendDiscordMessage(string content);
+    Task SendDiscordMessage(string content, string username);
 }
 
 public class DiscordNotificationService : IDiscordNotificationService
@@ -27,10 +28,15 @@ public class DiscordNotificationService : IDiscordNotificationService
         await SendDiscordMessage($"Backend warmed up!\nTook {startupTime.TotalSeconds:F2} seconds.\nMemory usage: {memoryUsageMb} MB");
     }
 
-    public async Task SendResponseNotification(string username, string questionSetName, string questionText, string responseText)
+    public async Task SendResponseNotification(string username, string questionSetName,
+        Dictionary<string, string> response)
     {
-        var message = $"New Response:\n**User:** {username}\n**Question Set:** {questionSetName}\n**Question:** {questionText}\n**Response:** {responseText}";
-        await SendDiscordMessage(message);
+        var message = $"**{questionSetName}**\n**Question:**\n";
+        foreach (var item in response)
+        {
+            message += $"**{item.Key}** {item.Value}\n";
+        }
+        await SendDiscordMessage(message, username);
     }
     
     public async Task SendExceptionNotification(string path)
@@ -39,14 +45,22 @@ public class DiscordNotificationService : IDiscordNotificationService
         await SendDiscordMessage(message);
     }
 
-    public async Task SendDiscordMessage(string content)
+    public async Task SendDiscordMessage(string content, string? username = null)
     {
         if (string.IsNullOrEmpty(_webhookUrl))
         {
             return;
         }
 
-        var payload = new { content };
+        object payload;
+        if (!string.IsNullOrEmpty(username))
+        {
+            payload = new { content, username };
+        }
+        else
+        {
+            payload = new { content };
+        }
         var json = JsonSerializer.Serialize(payload);
         var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
 
