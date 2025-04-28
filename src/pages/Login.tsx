@@ -13,7 +13,7 @@ export const Login: React.FC = () => {
   const handleLogin = async (code: string) => {
     try {
       setError(null);
-      const response = await login(code); // user login
+      const response = await login(code.toUpperCase()); // user login
       console.info(response);
 
       if (response.success) {
