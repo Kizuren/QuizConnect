@@ -1,6 +1,6 @@
 ﻿services:
   quizconnectserver:
-    image: ghcr.io/marcus7i/quizconnect:latest
+    image: ghcr.io/kizuren/quizconnect:latest
     container_name: quizconnectserver
     environment:
       - APP_UID=1000
